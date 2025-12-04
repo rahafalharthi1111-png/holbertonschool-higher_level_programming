@@ -1,12 +1,15 @@
 # Python - Test Driven Development
 
-This project focuses on practicing **Test-Driven Development (TDD)** in Python using the `doctest` module.  
-Each task requires writing documentation and tests **before** implementing any code.
+This project introduces the concept of Test Driven Development (TDD) in Python.
 
-## Requirements
-- Python 3.8 (Ubuntu 20.04 LTS)
-- No external libraries allowed
-- Allowed editors: `vi`, `vim`, `emacs`
-- All Python files must be executable and follow `pycodestyle` (version 2.7.\*)
+### Task 0: Integers addition
+You must write a function that adds two integers, following these rules:
 
-## Project Structure
+- The function must be named `add_integer`.
+- The function must accept two arguments: `a` and `b`.
+- `a` and `b` must be integers or floats.
+- If they are floats, they must be cast to integers.
+- If `a` or `b` is not an integer or float, raise a `TypeError`.
+- Return the addition of the two numbers.
+- No external modules are allowed.
+- Test cases must be written using doctest.

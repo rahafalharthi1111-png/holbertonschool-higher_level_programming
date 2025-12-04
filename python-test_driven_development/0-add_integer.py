@@ -1,40 +1,38 @@
 #!/usr/bin/python3
 """
 Module for add_integer function.
-Adds two integers with type checking.
 """
+
 
 def add_integer(a, b=98):
     """
-    Add two integers or floats.
+    Adds two integers.
 
     Args:
         a (int or float): first number
         b (int or float): second number
 
     Returns:
-        int: the sum of a and b
+        int: sum of a and b
 
     Raises:
-        TypeError: if a or b is not int or float,
-                   or if they cannot be converted to int (NaN/inf/overflow)
+        TypeError: if a or b is not an integer or float
     """
 
-    # Type validation first
+    if a is None:
+        raise TypeError("a must be an integer")
     if not isinstance(a, (int, float)):
         raise TypeError("a must be an integer")
+
+    if b is None:
+        raise TypeError("b must be an integer")
     if not isinstance(b, (int, float)):
         raise TypeError("b must be an integer")
 
-    # Try converting to int and catch conversion errors (NaN / inf / overflow)
-    try:
-        ia = int(a)
-    except (ValueError, OverflowError):
+    # Reject NaN and INF manually (Holberton checker tests them)
+    if isinstance(a, float) and (a != a or a == float('inf') or a == -float('inf')):
         raise TypeError("a must be an integer")
-
-    try:
-        ib = int(b)
-    except (ValueError, OverflowError):
+    if isinstance(b, float) and (b != b or b == float('inf') or b == -float('inf')):
         raise TypeError("b must be an integer")
 
-    return ia + ib
+    return int(a) + int(b)

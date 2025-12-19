@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """
 Defines shapes using abstract base classes and demonstrates duck typing.
 """

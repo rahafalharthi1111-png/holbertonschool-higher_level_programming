@@ -1,93 +1,85 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
+"""
+Flask-based RESTful API for basic user management.
 
-from flask import Flask, jsonify, request
+This API provides a set of HTTP endpoints for managing a collection of
+users stored
+in memory. It supports reading the list of users, checking API status,
+retrieving
+individual user data, and adding new users via POST requests.
+
+Routes:
+    - GET '/'             : Returns a welcome message.
+    - GET '/data'         : Returns a list of all registered usernames in
+    JSON format.
+    - GET '/status'       : Returns the plain text message 'OK'.
+    - GET '/users/<username>' : Returns user data if the username exists,
+    or a 404 error.
+    - POST '/add_user'    : Adds a new user using JSON data containing at
+    least a 'username' field.
+
+Modules:
+    flask: Web framework used to create the API.
+
+Usage:
+    Run this script to start the Flask development server on port 5000.
+    Example request:
+        curl -X POST -H "Content-Type: application/json" \
+        -d '{"username": "fjolla", "age": 25}' http://localhost:5000/add_user
+
+Note:
+    All user data is stored in a volatile in-memory dictionary (`users`), and
+    will be
+    lost when the server restarts.
+"""
+from flask import Flask
+from flask import jsonify
+from flask import request
+
 
 app = Flask(__name__)
-
-# In-memory storage of users
 users = {}
 
 
-@app.route("/", methods=["GET"])
+@app.route('/')
 def home():
-    """
-    Root endpoint that returns a welcome message.
-
-    Returns:
-        str: Welcome message.
-    """
+    """Return a welcome message."""
     return "Welcome to the Flask API!"
 
 
-@app.route("/data", methods=["GET"])
+@app.route('/data', methods=['GET'])
 def data():
-    """
-    Endpoint that returns a list of all usernames.
-
-    Returns:
-        Response: JSON response with list of usernames.
-    """
-    return jsonify(list(users.keys()))
+    """Return the list of all usernames."""
+    return jsonify(list(users.keys())), 200
 
 
-@app.route("/status", methods=["GET"])
-def status():
-    """
-    Status endpoint to verify the server is running.
-
-    Returns:
-        str: "OK" string.
-    """
-    return "OK"
+@app.route('/status', methods=['GET'])
+def stat():
+    """Return the status message 'OK'."""
+    return 'OK'
 
 
-@app.route("/users/<username>", methods=["GET"])
-def get_user(username):
-    """
-    Get user data by username.
-
-    Args:
-        username (str): The username to look up.
-
-    Returns:
-        Response: JSON response with user data or error message.
-    """
-    if username not in users:
+@app.route('/users/<username>')
+def uname(username):
+    """Return the user's data if found, or a 404 error."""
+    if username in users:
+        return jsonify(users[username])
+    else:
         return jsonify({"error": "User not found"}), 404
-    return jsonify(users[username])
 
 
-@app.route("/add_user", methods=["POST"])
-def create_user():
-    """
-    Add a new user from JSON payload.
-
-    Expected JSON body:
-        {
-            "username": "alice",
-            "name": "Alice",
-            "age": 25,
-            "city": "Paris"
-        }
-
-    Returns:
-        Response: JSON response with confirmation message and user data,
-        or error message if validation fails.
-    """
-    data = request.get_json()
-
-    if "username" not in data:
+@app.route('/add_user', methods=['POST'])
+def adduser():
+    """Add a new user to the system using JSON input."""
+    new_user = request.get_json()
+    if "username" in new_user:
+        user2 = new_user["username"]
+        users[user2] = new_user
+        print(user2)
+        return jsonify({"message": "User added", "user": new_user}), 201
+    else:
         return jsonify({"error": "Username is required"}), 400
 
-    username = data.get("username")
 
-    if not username:
-        return jsonify({"error": "Username already exists"}), 409
-
-    users[username] = data
-
-    return jsonify({"message": "User added", "user": data}), 201
-
-
-if __name__ == "__main__":
-    app.run()
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=5000)
